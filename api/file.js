@@ -8,6 +8,16 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Please provide a valid '.mp3' filename." });
   }
 
-  res.json({a: name});
+  const filePath = join(process.cwd(), 'mp3-files', name);
+
+  try {
+    const fileBuffer = await readFile(filePath);
+
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.send(fileBuffer);
+  } catch (err) {
+    res.status(404).json({ error: 'MP3 file not found.' });
+  }
+  
   
 }
